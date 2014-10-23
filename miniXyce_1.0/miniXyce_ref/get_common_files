@@ -1,0 +1,51 @@
+#!/bin/bash
+
+if [ ! -f ./YAML_Doc.cpp ] ; then
+if [ -d ../../common ]; then
+dir=../../common
+
+cp ${dir}/YAML_Doc.cpp .
+cp ${dir}/YAML_Doc.hpp .
+cp ${dir}/YAML_Element.cpp .
+cp ${dir}/YAML_Element.hpp .
+cp ${dir}/generate_info_header .
+
+fi
+fi
+
+if [ ! -f ./YAML_Doc.cpp ] ; then
+if [ -d ../common ]; then
+dir=../common
+
+cp ${dir}/YAML_Doc.cpp .
+cp ${dir}/YAML_Doc.hpp .
+cp ${dir}/YAML_Element.cpp .
+cp ${dir}/YAML_Element.hpp .
+cp ${dir}/generate_info_header .
+
+fi
+fi
+
+if [ ! -f ./mX_timer.cpp ] ; then
+dir=../utils
+cp ${dir}/mX_timer.h .
+cp ${dir}/mX_timer.cpp .
+
+fi
+
+if [ ! -f ./last_used_params.txt ] ; then
+dir=../tests
+cp ${dir}/last_used_params.txt .
+cp ${dir}/default_params.txt .
+
+fi
+
+if [ ! -d ./tests ] ; then
+dir=../tests
+mkdir tests
+cp ${dir}/cir*.net tests/.
+cp ${dir}/RC*.pl tests/.
+cp ${dir}/RLC*.pl tests/.
+cp ${dir}/compareResults.pl tests/.
+cp -r ${dir}/goldStandards tests/.
+fi

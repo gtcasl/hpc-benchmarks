@@ -1,0 +1,6 @@
+circuit = cir6.net
+t_start = 0
+t_step = 1e-8
+t_stop = 10e-6
+tol = 1e-06
+k = 10

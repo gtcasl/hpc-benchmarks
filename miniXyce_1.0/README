@@ -1,0 +1,141 @@
+
+miniXyce circuit/network simulation mini-application
+
+--------------------------------------
+Contents of this README file:
+1. miniXyce overview
+2. miniXyce versions
+3. building miniXyce
+4. running miniXyce
+5. generating test circuits
+6. understanding the results
+--------------------------------------
+
+--------------------------------------
+1. miniXyce overview
+
+At this time, miniXyce is a simple linear circuit simulator with a 
+basic parser that performs transient analysis on any circuit with
+resistors (R), inductors (L), capacitors (C), and voltage/current 
+sources.  The parser incorporated into this version of miniXyce is a
+single pass parser, where the netlist is expected to be flat 
+(no hierarchy via subcircuits is allowed). Simulating the system of 
+DAEs generates a nonsymmetric linear problem, which is solved using 
+un-preconditioned GMRES. The time integration method used in miniXyce 
+is backward Euler with a constant time-step.  The simulator outputs
+all the solution variables at each time step in a 'prn' file.
+
+The development of the first version of miniXyce resulted in something
+closer to a compact application than a miniapp since more focus was put 
+on the simulator returning the correct answer, than modeling performance 
+characteristics of interest. Further analysis of Xyce has called out 
+particular performance issues in each of the three phases of circuit
+simulation:  parsing, device evaluation/loading, and the solution of linear
+equations.  These issues will inspire enhancements to, and a second version 
+of, miniXyce. 
+
+Finally, miniXyce compares the computed solution against gold standard output
+from Xyce for a couple test circuits found in the 'tests' directory.
+
+--------------------------------------
+2. miniXyce versions:
+- miniXyce_ref:
+     reference version: self-contained, includes serial and MPI-parallel
+     parallelism is optional, it can be built without MPI usage.
+
+-------------------
+3. Building miniXyce:
+
+ The default case is: cd into the 'miniXyce_ref' directory and type 'make'.
+ That will build the MPI-parallel miniXyce code assuming you have the
+ mpi-compiler-wrappers mpicxx in your path.
+
+ If successful, that will create an executable called miniXyce.x.
+
+Special builds can be done for things like:
+- gnu compilers (g++), no MPI
+  type 'make -f Makefile.gnu.serial'
+- Intel compilers (icpc), no MPI
+  type 'make -f Makefile.intel.serial'
+
+If the default makefile isn't correct for your system, copy and edit and
+use a 'make -f' command similar to the above cases.
+
+Note 1:
+  'make' calls the script 'generate_info_header' to generate miniXyce_info.hpp
+  with platform and build information. If that script fails for some reason and 
+  doesn't produce a valid miniXyce_info.hpp header, you can still build miniXyce by 
+  typing
+  'make MINIXYCE_INFO=0'.
+ 
+-------------------
+4. Running miniXyce:
+
+ miniXyce can be run like this:
+   % <mpi-run-command> miniXyce.x <options>
+
+ Description of command line options:
+
+  -c, --circuit {filename}: specifies the netlist to be simulated.
+  -ti, --tstart, --t_start {double value}: specifies start time of transient simulation
+  -tf, -- tstop, --t_stop {double value}: specifies stop time of transient simulation
+  -h, --tstep, --t_step {double value}: specifies the length of each transient simulation time step
+  -tol, --tolerance {double value}: specifies the GMRES tolerance
+  -k, --restart {double value}: tells GMRES how often to restart
+  -i, --init, --init_cond, --initcond, --x0 {vector of length (num_nodes + num_voltage_sources + num_inductors)}: 
+      specifies the initial condition for the simulation. If it is not specified, then a DC operating point initial condition is assumed.
+  -pf, --paramsfile, --params_file {filename}: specifies a file from which additional simulation parameters are to be obtained.
+  --prev : this flag tells the simulator to use whatever parameter values it used last time (for those parameters that have not been specifies on the command line)
+
+ miniXyce examples:
+
+  Ex 1: Run a simulation of circuit tests/cir1.net on 3 processors, using t_start = 1e-6 and other parameters taken from the file params.txt
+
+   mpirun -np 3 miniXyce.x --circuit tests/cir1.net --t_start 1e-6 --pf params.txt
+
+  Ex 2: Repeat the above simulation, but this time with 4 processors
+
+   mpirun -np 4 miniXyce.x --prev
+
+  Ex 3: Simulate the circuit cir4.net on 2 processors with default parameters
+
+   mpirun -np 2 miniXyce.x -c tests/cir4.net
+
+  Ex 4: Repeat the above simulation, but this time use an initial condition [2 3]
+
+   mpirun -np 2 miniXyce.x --prev --init 2 3
+
+  Note: The initial condition is *not* saved in the last_used_params.txt file. Only the rest of the parameters are saved. 
+        So if you use --prev without specifying anything else, a DC operating point initial condition will be computed.
+-----------------
+5. Generating test circuits:
+
+The test circuits provided in the 'tests' directory (cir1.net, cir2.net, cir3.net, and cir4.net) can run on, at most, 4 MPI processes.
+To make it easier to generate netlists for RC and RLC Ladders, there are 2 perl scripts RC_Ladder.pl and RLC_Ladder.pl in the 'tests' 
+directory. You can use them as follows:
+
+perl RC_Ladder.pl <number of RC Ladder stages you want> ><circuit name>.net
+perl RLC_Ladder.pl <number of RLC Ladder stages you want> ><circuit name>.net
+
+Example: perl RC_Ladder.pl 5 >cir6.net
+
+This allows the user to generate arbitrarily large linear circuits to test miniXyce.
+
+-----------------
+6. Understanding the results
+
+After running miniXyce, you will be left with a text file named <ckt_name>_tran_results.prn. There will only be one, regardless of the number of processors.
+
+The first line of this file is of the form:
+
+TIME state_variable_name_1 state_variable_name_2 ... state_variable_name_k
+
+Each subsequent line in each of these files gives values of the form:
+
+time value1 value2 ... valuek
+
+where value1 ... valuek are all the components of the solution vector x. 
+In addition, each line of the text file will contain two more attributes corresponding to the number of gmres iterations and restarts respectively.
+
+Matlab can be used to plot the data in this file using the very basic plot_tran_sim_results.m, which can be found in the 'utils' directory.
+ 
