@@ -1,0 +1,128 @@
+This is
+/memex/ybao/ready_for_backup/parsec-3.0-working-dir/parsec-3.0-ready-for-release/pkgs/tools/libtool/src/doc/libtool.info,
+produced by makeinfo version 4.8 from
+/memex/ybao/ready_for_backup/parsec-3.0-working-dir/parsec-3.0-ready-for-release/pkgs/tools/libtool/src/doc/libtool.texi.
+
+INFO-DIR-SECTION GNU programming tools
+START-INFO-DIR-ENTRY
+* Libtool: (libtool).           Generic shared library support script.
+END-INFO-DIR-ENTRY
+
+INFO-DIR-SECTION Individual utilities
+START-INFO-DIR-ENTRY
+* libtoolize: (libtool)Invoking libtoolize.     Adding libtool support.
+END-INFO-DIR-ENTRY
+
+   This file documents GNU Libtool 2.2.6
+
+   Copyright (C) 1996-2008 Free Software Foundation, Inc.
+
+   Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled "GNU
+Free Documentation License".
+
+
+Indirect:
+libtool.info-1: 1077
+libtool.info-2: 258920
+
+Tag Table:
+(Indirect)
+Node: Top1077
+Node: Introduction7316
+Node: Motivation9138
+Node: Issues10458
+Node: Other implementations11936
+Node: Postmortem12479
+Node: Libtool paradigm14099
+Node: Using libtool15044
+Node: Creating object files17147
+Node: Linking libraries20884
+Ref: Linking libraries-Footnote-124712
+Node: Linking executables24853
+Ref: Linking executables-Footnote-129945
+Ref: Linking executables-Footnote-230238
+Node: Debugging executables30318
+Node: Installing libraries33141
+Ref: Installing libraries-Footnote-136303
+Node: Installing executables36374
+Node: Static libraries37210
+Node: Invoking libtool40487
+Node: Compile mode43868
+Node: Link mode46907
+Node: Execute mode54833
+Node: Install mode55613
+Node: Finish mode57966
+Node: Uninstall mode58401
+Node: Clean mode58842
+Node: Integrating libtool59301
+Node: Autoconf macros60058
+Node: Makefile rules63905
+Node: Using Automake65008
+Ref: Using Automake-Footnote-166589
+Node: Configuring66985
+Node: LT_INIT68237
+Ref: LT_INIT-Footnote-182337
+Node: Configure notes82590
+Node: Distributing85765
+Node: Invoking libtoolize86682
+Node: Autoconf and LTLIBOBJS92870
+Node: Static-only libraries93614
+Ref: Static-only libraries-Footnote-194941
+Node: Other languages95050
+Node: C++ libraries95758
+Node: Tags97196
+Node: Versioning98588
+Node: Interfaces99956
+Node: Libtool versioning100589
+Node: Updating version info102802
+Node: Release numbers104680
+Node: Library tips106536
+Node: C header files109342
+Ref: C header files-Footnote-1113019
+Node: Inter-library dependencies113228
+Node: Dlopened modules115892
+Node: Building modules117798
+Node: Dlpreopening118999
+Node: Linking with dlopened modules124928
+Node: Finding the dlname129857
+Ref: Finding the dlname-Footnote-1131175
+Node: Dlopen issues131228
+Node: Using libltdl132283
+Node: Libltdl interface134124
+Ref: Libltdl interface-Footnote-1147781
+Node: Modules for libltdl148075
+Node: Thread Safety in libltdl150601
+Node: User defined module data151614
+Node: Module loaders for libltdl159106
+Ref: Module loaders for libltdl-Footnote-1168349
+Node: Distributing libltdl168455
+Ref: Distributing libltdl-Footnote-1182236
+Ref: Distributing libltdl-Footnote-2182532
+Node: Trace interface182682
+Node: Troubleshooting183530
+Node: Libtool test suite184065
+Node: Test descriptions184843
+Node: When tests fail193845
+Node: Reporting bugs195037
+Node: Maintaining196655
+Node: New ports197398
+Node: Information sources198091
+Node: Porting inter-library dependencies200559
+Node: Tested platforms203283
+Node: Platform quirks211713
+Node: References212693
+Node: Compilers213543
+Ref: Compilers-Footnote-1215119
+Node: Reloadable objects215435
+Node: Multiple dependencies215794
+Node: Archivers216691
+Node: libtool script contents217257
+Node: Cheap tricks234622
+Node: GNU Free Documentation License236489
+Node: Index258920
+
+End Tag Table
