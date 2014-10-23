@@ -1,0 +1,7 @@
+CMDLINE=cc -c -DEFAULT:abi=64:isa=mips4:proc=r12000:opt=2 -ansi -O3 -I../../include -64 c_qsort.c
+PWD=/r1/cicyt/sande/work/OmpSCR/OmpSCR_v2.0/applications/c_QuickSort
+----
+----
+USAGE_STR 13
+array 37748736
+global_pad_0 37774950

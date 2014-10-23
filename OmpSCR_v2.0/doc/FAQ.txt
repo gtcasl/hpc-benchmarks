@@ -1,0 +1,296 @@
+1.- GENERAL
+
+* What is OmpSCR?
+It is a repository of free OpenMP source codes useful for learning, testing
+and benchmarking. It is offered to compiler designers, application
+programmers and final users of OpenMP.
+
+* Which programming language uses the applications in the OmpSCR?
+The OpenMP API supports parallel programming in C/C++ and Fortran, and
+therefore, these are the languages for the applications in the OmpSCR.
+
+* Where can I get the last version of OmpSCR?
+It is available in the download section at http://www.pcg.ull.es/OmpSCR/
+
+* What kind of applications are included in OmpSCR?
+They range from very simple synthetic codes (i.e. parallelized loops with
+dependencies) to real scientific applications (i.e. Molecular dynamic).
+Some of them are oriented to show how to implement usual parallel paradigms
+using OpenMP and others are provided to remark red-spot issues in the
+implementation of OpenMP compilers (i.e. nested parallelism).
+
+2.- INSTALLATION
+
+* Where can I get the OmpSCR?
+Visit the Download section in the OmpSCR web site:
+http://www.pcg.ull.es/OmpSCR/
+
+* Can I build the OmpSCR applications in my machine?
+OmpSCR distribution has been successfully tested in several platforms (Intel,
+Sun, IBM, SGI, HP). It uses GNUmake, ANSI C and standard Fortran90/95 for wide
+portability. In case you find troubles to build the distribution, please
+report them to ompscr@etsii.ull.es
+
+* Do I need to define environment variables?
+No
+
+* I have decompressed the .tar.gz file and I have got several directories.
+What's their meaning?
+The directories in OmpSCR and their contents are as follows:
+  applications: contains the applications currently in the repository
+  common:       source code needed for all the applications
+  developer:    files oriented to applications developers
+  log:          stores log messages from compilations
+  bin:          binaries for the applications once they're built
+  config:       machine-dependent configuration files
+  doc:          documentation
+  include:      source code files included by the applications
+
+* Once I've decompressed the OmpSCR, what should I do?
+You should configure the OmpSCR using 'gmake config'.
+You must do this before compiling the applications
+
+* I have decompressed the .tar.gz file. What's the next step?
+Use 'gmake' with no parameters to see the different options
+ 
+* When I run 'make' I get some error messages
+OmpSCR uses GNU 'gmake' instead of native 'make'.
+GNU gmake is a standard tool (http://www.gnu.org/software/make/) that you can
+compile for your own platform.
+
+* Why 'make config' is needed?
+make config indicates to the compilation scripts the paths and parameters of C
+and/or Fortran90/95 compilers, because they're specific to your machine.
+ 
+* Why 'gmake config' does not work?
+You should have a bash or ash shell installed
+
+* I can't use 'gmake config'. What should I do?
+Define manually the contents in the file config/templates/user.cf.mk
+
+* What's the format for the config/templates/user.cf.mk file?
+In the same directory you have examples for several machines.
+If you don't have the user.cf.mk file, you can build one from none.cf.mk.
+Copy the file as user.cf.mk. It is a file with the basic structure, where
+you'll have to fill the corresponding fields.
+
+* When making the configuration, the script ask for several parameters. What's
+their meaning?
+You have explanations in the configuration files (*.cf.mk)
+
+* Where can I get the information for building user.cf.mk file?
+Those values are machine-dependent.
+Test the parameters for your compiler.
+If you don't know them, ask to your site system administrator.
+
+* Where can I get *.cf.mk files for other machines?
+You have some in ./config/templates directory.
+They are also available in the download section of the OmpSCR
+
+* I have installed the user.cf.mk file. What should I do now?
+Now you can compile the different applications.
+If you get problems, see the 'COMPILATION' section in the FAQ
+
+* I want to add my own applications under my local OmpSCR structure. 
+What should I do?
+In the ./developer directory of the OmpSCR distribution, there is a
+README.developer file, containing instructions about how to adapt your code.
+
+* How can I take my local installation of OmpSCR to a different machine?
+Use 'gmake dist' on the root directory of the OmpSCR. This will create a
+compressed file containing a copy of your local OmpSCR.
+
+3.- COMPILATION
+
+* What should I do to compile the applications?
+Use 'gmake all' in the OmpSCR directory and it will compile all the
+applications
+
+* Nothing happens when I run 'gmake all'
+Verify that you are in the root directory of the OmpSCR
+
+* When I try to compile the applications, I get many errors and warnings.
+Perhaps you have not defined correctly your machine configuration. See the
+'INSTALLATION' section in the FAQ.
+
+* I think the compilation has been successful, but I can't find the binaries.
+
+* There are two binaries (appname_seq and appname_par) for each application.
+What's their meaning?
+They are the sequential (_seq) and OpenMP parallel (_par) versions of the
+application.
+
+* I want to build only the sequential/parallel versions of the application
+If you use 'gmake seq' or 'gmake par' It will build only the corresponding
+version
+
+* I am working with a specific application. May I build only this?
+If you use gmake in the directory of the application, It will build only the
+binary for that application.
+
+* I want to delete the results of the compilations
+Use 'gmake clean' on the root directory of OmpSCR
+
+* I want to compile an application with specific compiler parameters. What
+GNUmakefile should I use?
+Each application has an specific GNUmakefile
+
+* Once I've compiled the applications, how can I run them?
+See the 'EXECUTION' section in these FAQ
+
+4.- EXECUTION
+
+* I've built the binaries for the applications. How do I run them?
+The binaries are in the ./bin directory '_seq' and '_par' are the suffixes for
+the sequential and parallel versions. The execution is self explanatory.
+
+* Do the applications require any parameters for execution?
+Yes. Most of them do. If you execute the binary with no parameters, you'll get
+an explanatory text about the required parameters for the application.
+
+* Which values are appropriate for the parameters of the applications?
+If you run the application with the '-test' flag it will run with predefined
+values for the parameters. We recommend to test the applications with these
+values, but different values are also possible. You should investigate the
+best suitable values for your system.
+
+* Have you stated specific values for the parameters of the applications for
+benchmarking?
+At this moment, we haven't. 
+In case you're interested in publishing your results with the applications in
+the OmpSCR we recommend to use the parameters given with '-test' option, but
+this is a matter to be discussed.
+
+* How do I pass the parameters to the applications?
+All the applications in the OmpSCR take the values from the command line.
+
+* Do I need a parallel machine to execute the applications in the OmpSCR?
+You can build and execute the sequential versions of the codes in a sequential
+architecture, but if you want to run the parallel versions, you'll need a
+parallel one.
+
+* Do I need queues for parallel execution?
+This is machine-dependent. Ask the system administrator in your installation.
+
+* May I execute in background?
+This is machine-dependent. Ask the system administrator in your installation.
+
+* How do I know if my OpenMP compiler provides effective support for nested
+parallelism?
+This depends on the compiler itself. Ask the system administrator in your
+installation.
+
+5.- TIME MEASUREMENT
+
+* Do I need to include timing routines in the applications?
+All the applications in the OmpSCR have their own timing routines (you can see
+the source code in the ./common directory).
+
+* Which functions should I use for time measurement?
+You can find them in the ompscrCommon.c (for C)  and ompscrCommon.f90 (for
+Fortran90/95) in the ./common directory. The names of the timing routines are
+OSCR_timer* and in the source code files you can find an explanation for each.
+
+* I want to change the point where time measurements are made in an
+application. What should I do?
+Edit the application source code and change the point where you call the
+OSCR_timer_start and OSCR_timer_stop functions.
+
+* I want to change the timing routines for my system. What should I do?
+The code for calling the system time routine are in the files wtime.c and
+wtime.f90 in the ./common directory. We recommend that you change these files
+and use the OSCR functions interface.
+
+* When I run my application I get an error: 'OSCR Time not init....'. What's
+the problem?
+Before calling OSCR_timer_start and OSCR_timer_stop functions, you must
+indicate the number of timers you're going to use (using the function
+OSCR_timers_init). Also, you should clear the timers (OSCR_timer_clear) before
+using it.
+
+6.- RESULTS
+
+* How can I get the execution time for the OmpSCR applications?
+After execution, the applications report the elapsed time for the execution.
+
+* What's the format for the final report of the applications?
+This format is defined in the routine OSCR_report.
+You can find the source code in the corresponding ompscrCommon file.
+
+* May I compare my results with some others?
+You can find results for different applications and platforms in the Download-Results
+section of the OmpSCR web site.
+
+* May I send my own results to be used by others as a reference?
+Of course! Any results are welcome.
+If you plan to send results you should register in the OmpSCR web site and
+submit them in the 'Download-Results' section with an explanation of the
+conditions of your experiment.
+
+7.- APPLICATIONS
+
+* The applications in the OmpSCR are 'real applications' or synthetic
+experiments?
+Some of the applications implement interesting scientific applications, while
+others are synthetic experiments.
+
+* I have my own OpenMP applications. What should I do to contribute them to
+the OmpSCR?
+In the ./developer directory of the OmpSCR distribution, there is a
+README.developer file, containing instructions about how to adapt your code.
+Anyway all examples of OpenMP codes of interest are welcome "as they are".
+The OmpSCR team may tune the details.
+
+* I want to use some of the applications in the OmpSCR. Am I allowed to do so?
+Read the comments in the first lines for each application. Most of the
+applications are under the terms of the GNU General Public License.
+
+* Where can I find additional information about the applications in the
+OmpSCR?
+In the comments for each application you have references for further
+information.
+
+* I want to add my own applications under my local OmpSCR structure. 
+What should I do?
+See the 'INSTALLATION' section in the FAQ.
+
+* I want to remove some applications from my local installation of the OmpSCR.
+See the 'UNINSTALL' section in the FAQ.
+
+8.- UNINSTALL
+
+* Is there any uninstall process to remove my local copy of the OmpSCR?
+No. Simply remove all the directories structure.
+
+* I want to remove one application from my local copy of the OmpSCR.
+Simply remove the corresponding directory from the ./applications directory.
+
+* Before removing my local copy, I would like to save the configuration file.
+Save a copy of the ./config/templates/user.cf.mk file.
+
+* Before removing my local copy, I would like to save an application.
+Save a copy of the contents of the ./applications/app for your app.
+
+* I want to remove the present configuration.
+Run 'gmake distclean'. This removes the present configuration. If you want to
+use the OmpSCR you'll need to define the configuration again.
+
+9.- MISCELANEA
+
+* How can I reach the OmpSCR team?
+Please, address us at ompscr@etsii.ull.es
+
+* Where can I find further information about OmpSCR?
+Go to the 'Publications' section at the OmpSCR web site
+http://www.pcg.ull.es/OmpSCR/
+
+* Who is the OmpSCR team?
+We are a (very) small group of people: Antonio Dorta, Arturo González and F.
+de Sande
+
+What's the meaning of 'PGC', 'DEIOC' and 'ULL'
+These are acronyms for PCG: Parallel Computing Group (for further information,
+please visit http://nereida.deioc.ull.es/
+In Spanish, DEIOC stands for Computer Science, Statistics and Operational
+Research department.
+In Spanish, ULL stands for La Laguna University.

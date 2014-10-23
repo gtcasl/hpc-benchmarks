@@ -1,0 +1,447 @@
+
+OpenMP Source Code Repository
+
+	INSTRUCTIONS FOR DEVELOPERS OF NEW REPOSITORY APPLICATIONS
+	(v1.2)
+
+----------------------------------------------------------------------------
+
+INDEX
+
+1 - Introduction
+2 - Programming language and OpenMP version
+3 - Documenting your code
+4 - Using the common module interface and tools
+    4.1 - Command line processing conventions
+    4.2 - Timers
+    4.3 - Performance and usage report
+    4.4 - Example
+5 - Makefile
+
+Appendix A - List of common module intefaces
+
+----------------------------------------------------------------------------
+
+1) Introduction
+-----------------
+This document is delivered to developers who want to include their new source
+code applications into the OmpSCR repository.
+
+
+2) Programming languages and OpenMP version
+---------------------------------------------
+At this moment the OpenMP repository is intended to contain codes only
+in C or Fortran90/95 languages.
+
+OpenMP pragmas should complain with OpenMP v1.1 or 2.0 specification.
+If you use specific version 2.0 features, please include a comment in
+the RESTRICTIONS tag described in section ....
+
+
+3) Documenting your code
+---------------------------
+The OpenMP Repository source code files should present a similar documentation
+style. However, a recommendation guide is not available at this moment.
+Have a look to the available applicaitons to get an idea of the intended style.
+
+All source code files should include the comments header found in the file
+HEADER.*, in the ./developer directory of the distribution.
+We suggest you do not to elliminate the license header comment to keep the codes 
+in this repository open and free, but this shoud be considered only a recommendation.
+The use of the license part of the header is not mandatory.
+You can select any kind of open license that you prefer: GPL, BSD, etc.
+
+Several information tags to be filled-up by the developer are found at the 
+end of the header. Please, try to fill up all the appropriate tags on your
+main applications source code file.
+
+
+4) Using the common module interface and tools
+------------------------------------------------
+We intend all the applications in the repository to follow some
+conventions on getting the command line arguments and reporting
+performance timings.
+
+The OpenMP repository provides the developer with a common module, always
+linked with the application, which provides certain funcionalities. The 
+developer should use them to keep an uniform look on the source codes.
+The tools also do some consistency checks. To use it, add the following 
+line to your code where necessary:
+
+C language: 		#include <OmpSCR.h>
+
+Fortran90/95: 		USE oscrCommon_f
+
+The full list of functions and subroutines interfaces is included at the end
+of this document.
+
+4.1) Initializing
+------------------
+The common module provides one function/subroutine to initialize all the
+details concerning the use of the other module functions/subroutines for
+command-line argument processing and timings report.
+
+This functions MUST be called before any other module function.
+Its parameters are a collection of integer values and string arrays which
+contain the following data:
+
+- The number of threads (typically obtained with omp_get_max_threads())
+- A description line (which is written at the begining of execution)
+- An optional usage line (if not provided, a default line will 
+		be constructed using the following argument names)
+- The number of command-line arguments expected
+		(each application has a fixed number of arguments)
+- A string array with the name of each argument
+- A string array with the default value of each argument 
+		(this values are used only if the user uses the -test option)
+- The number of timers needed by the application
+- The number of these timers which will be reported at the end
+- A string array with the names of these reported timers
+
+* C language:	
+	void OSCR_init(
+		int numThreads,
+		char *description,
+		char *usage,		// NULL means standard usage line
+		int numArgs,
+		char *argNames[],
+		char *defaultValues[],
+		int numTimers,
+		int numReportedTimers,
+		char *reportedTimerNames[],
+		int argc, char *argv[] )
+
+		NOTE: argc, argv are the standard arguments of main
+
+* Fortran90/95:	
+	call OSCR_init(
+		numThreads,
+		description,
+		usage,			! '' empty string, standard usage line
+		numArgs,
+		argNames,
+		defaultValues,
+		numTimers,
+		numReportedTimers,
+		reportedTimerNames )
+
+		integer, intent(in) :: numThreads
+		character(len=*), intent(in) :: description
+		character(len=*), intent(in) :: usage
+		integer, intent(in) :: numArgs
+		character(len=*), dimension(:),intent(in) :: argNames
+		character(len=*), dimension(:),intent(in) :: defaultValues
+		integer, intent(in) :: numTimers
+		integer, intent(in) :: numReportedTimers
+		character(len=*), dimension(:),intent(in) :: reportedTimerNames
+
+
+4.1) Command line processing conventions
+---------------------------------------
+The OpenMP source code repository is provided with a common set of functions 
+and procedures to check and read command line arguments. Repository 
+applications are expected to complain with the following characteristics:
+
+- Any command-line argument is limited to 1024 characters
+
+- The number of possible command line arguments is fixed, although
+	different for each application. Each argument should have
+	an associated string with its "name", and an associated string
+	with its "default value".
+
+- The application may also set a specific message to show to the user when 
+	the number or types of arguments are not the expected ones.
+
+	If not fixed with the OSCR_usage procedure, the common module
+	will use the first argument as the program name and the names
+	provided for each argument to produce a standard usage line.
+
+- Users may use a unique argument "-test" which is equivalent to run the
+	application with a collection of default values provided by the
+	application programmer.
+
+- Number of arguments, their names, and their default values are fixed
+	using the OSCR_init funtion described above.
+
+- Command-line arguments have one of the following possible default kind types:
+
+	* C language:	int, double, char *
+
+	* Fortran90/95:	INTEGER, REAL, DOUBLE PRECISION, CHARACTER(len=...)
+
+- Command-line arguments are obtained in the application source code
+	using the following common functions:
+
+	* C language:	int OSCR_getarg_int( int argIndex )
+			double OSCR_getarg_double( int argIndex )
+			char * OSCR_getarg_string( int argIndex )
+
+	* Fortran90/95:	OSCR_getarg_integer(argIndex)
+			OSCR_getarg_real(argIndex)
+			OSCR_getarg_doublePrecision(argIndex)
+			OSCR_getarg_character(argIndex)
+
+
+4.2) Timers
+-------------
+The common module of the OpenMP repository provides a standard time
+measuring tools interface. A "timer" is a clock which measures time in
+seconds. Internally, they use double precision values.
+
+The number of different "clocks" to be used must be initialized by 
+the application using the appropiate parameters of the OSCR_init
+function as described above.
+
+Timers are automatically initialized to 0.0 seconds.
+NOTE: Timers are indexed:	From 1 to numTimers in Fortran. 
+				From 0 to numTimers-1 in C.
+
+Timers are started and stoped respectively with:
+
+	OSCR_timer_start( timerIndex )
+	OSCR_timer_stop( timerIndex )
+
+The elapsed time between start/stop operations is added to the timer. To clear
+the accumulated elapsed time, use:
+
+	OSCR_timer_clear( timerIndex )
+
+The value of a timer may be read with:
+
+	OSCR_timer_read( timerIndex )
+
+	NOTE: This returs the accumulated elapsed time in the moment of the
+		last stop operation.
+
+The precission of the clock may be obtained with:
+
+	OSCR_timer_precision()
+
+
+4.3) Performance report
+--------------------------
+Main performance results are expected to be reported at the end of the 
+application run using a standard form, to ease the automatization 
+and post-processing of performance results.
+
+The developer should use the following procedure to print the final report:
+	OSCR_report()
+
+The report will include one line for each timer to be reported. The number
+of timers to be directly reported by the OSCR_report() function and the names
+of these timers are fixed when using the OSCR_init function.
+
+Each reported timer line will be similar to the following:
+
+Timer <timerName> <accumulatedElapsedValue>
+
+
+4.4) Example:
+--------------
+In this section we present an example of all these interface
+routines in Fortran90/95. You can also find the example file in the
+./developer directory of the distribution.
+
+
+!
+! OSCR common module test program 
+!
+! Compile with -O0 or some dummy loops could be eliminated by optimization
+!
+! Author: Arturo González-Escribano, 2004
+!
+program TestOSCRcommon
+USE oscrCommon_f
+USE omp_lib
+
+character(8),dimension(3) :: names = (/ 'argOne', 'argTwo', 'argThree' /)
+character(8),dimension(3) :: defValues = (/ '1', '2.0', 'three' /)
+character(18),dimension(1) :: timerNames = (/ 'task1' /)
+integer :: intVar
+real	:: realVar
+character(1024)	:: stringVar
+
+integer	:: i,j,k
+integer :: numThreads
+
+
+!
+! 1. FIXING NUMBER AND NAMES OF PARAMETERS
+!
+numThreads = omp_get_num_threads()
+call OSCR_init(								&
+	numThreads,							&
+	'A test application to show how the oscrCommon module is used',	&
+	'',								&
+	3, 								&
+	names,								&
+	defValues,							&
+	2,								&
+	1,								&
+	timerNames)
+
+!
+! 2. GET PARAMETER VALUES
+!
+intVar = OSCR_getarg_integer(1)
+realVar = OSCR_getarg_real(2)
+stringVar = OSCR_getarg_character(3)
+
+!
+! 3. SOME TIME MEASURED COMPUTATION
+!
+write(*,*) 'Beginning the first test'
+call OSCR_timer_start(1)
+do i=1,1000000
+	k=k+1
+enddo
+call OSCR_timer_stop(1)
+
+!
+! 4. SEVERAL (1,000) TIME ACCUMULATED TASKS (using another timer)
+!
+write(*,*) 'Beginning the second test'
+call OSCR_timer_start(2)
+do i=1,100
+	do j=1,1000000
+		k=k+1
+	enddo
+enddo
+call OSCR_timer_stop(2)
+
+!
+! 6. REPORT 
+!
+write(*,*)
+write(*,*) 'Report:'
+call OSCR_report()
+
+!  We manually report the mean time of the accumulated tasks
+write(*,'(A17,F12.6)') ' Mean time tasks2: ', OSCR_timer_read(2) / 100.0
+
+stop
+end program
+
+
+5) Makefile
+--------------
+In the ./developer directory of the distribution you will find a Makefile
+example. You should copy this Makfile to your application subdirectory under
+the ./applications directory of the distribution, and edit it to do the 
+following changes:
+
+Add you final application names in the line:
+EXES=
+
+The application names should be the names of the main source code files.
+A "_par" or "_seq" suffixes will be automatically added to the final parallel
+or sequential executable files depending on the version which is compiled.
+
+The rest of the lines in the Makefile will let you include specific flags,
+common dependencies, or specific module names to precompile and link with.
+Read the cooments in the Makefile for more information.
+
+
+
+
+APPENDIX A: List of common module intefaces
+-----------------------------------------------
+A.1, C binding
+----------------
+# INIT
+void OSCR_init(
+	int numThreads,
+	char *description,
+	char *usage,		// NULL means standard usage line
+	int numArgs,
+	char *argNames[],
+	char *defaultValues[],
+	int numTimers,
+	int numReportedTimers,
+	char *reportedTimerNames[],
+	int argc, char *argv[] )
+
+# COMMAND-LINE PROCESSING
+int OSCR_getarg_int (int argIndex)
+double OSCR_getarg_double (int argIndex)
+char * OSCR_getarg_string (int argIndex)
+
+# TIMERS CONTROL
+void OSCR_timers_init(int numTimers)
+void OSCR_timer_clear(int timerIndex)
+void OSCR_timer_start(int timerIndex)
+void OSCR_timer_stop(int timerIndex)
+double OSCR_timer_read(int timerIndex)
+double OSCR_timer_precision()
+
+# FINAL REPORT
+void OSCR_report()
+
+
+A.2, Fortran90/95 binding
+---------------------------
+! INIT
+call OSCR_init(
+	numThreads,
+	description,
+	usage,			! '' empty string, standard usage line
+	numArgs,
+	argNames,
+	defaultValues,
+	numTimers,
+	numReportedTimers,
+	reportedTimerNames )
+
+	integer, intent(in) :: numThreads
+	character(len=*), intent(in) :: description
+	character(len=*), intent(in) :: usage
+	integer, intent(in) :: numArgs
+	character(len=*), dimension(:),intent(in) :: argNames
+	character(len=*), dimension(:),intent(in) :: defaultValues
+	integer, intent(in) :: numTimers
+	integer, intent(in) :: numReportedTimers
+	character(len=*), dimension(:),intent(in) :: reportedTimerNames
+
+
+! COMMAND-LINE PROCESSING
+function OSCR_getarg_integer (argIndex)
+	integer OSCR_getarg_integer
+	integer,intent(in) argIndex
+
+function OSCR_getarg_real (argIndex)
+	real OSCR_getarg_real
+	integer,intent(in) argIndex
+
+function OSCR_getarg_doublePrecision (argIndex)
+	double precision OSCR_getarg_doublePrecision
+	integer,intent(in) argIndex
+
+function OSCR_getarg_character (argIndex)
+	character(len=1024) OSCR_getarg_character
+	integer,intent(in) argIndex
+
+! TIMERS CONTROL
+call OSCR_timers_init(numTimers)
+	integer,intent(in) numTimers
+
+call OSCR_timer_clear(timerIndex)
+	integer,intent(in) timerIndex
+
+call OSCR_timer_start(timerIndex)
+	integer,intent(in) timerIndex
+
+call OSCR_timer_stop(timerIndex)
+	integer,intent(in) timerIndex
+
+function OSCR_timer_read(int timerIndex)
+	real OSCR_timer_read
+	integer,intent(in) timerIndex
+
+function OSCR_timer_precision()
+	real OSCR_timer_precision
+
+! FINAL REPORT
+call OSCR_report()
+
+
+----------------------------------------------------------------------------

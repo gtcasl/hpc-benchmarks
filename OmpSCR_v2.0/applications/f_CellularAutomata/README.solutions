@@ -1,0 +1,96 @@
+
+CELLULAR-AUTOMATA PROGRAMS TO SOLVE THE HEAT EQUATION WITH AN ITERATIVE SOLVER
+-------------------------------------------------------------------------------
+Author: Arturo González Escribano
+Date: Jun,2004
+
+
+All versions solve the heat equation using a cellular-automata based on
+a Jacobi iterative solver (Quinn94 "Parallel Computing. Theory and Practice").
+
+The main algorithm copies the new values computed on each iteration in another
+matrix, which is used during the following iteration.
+
+Data partition is done in blocks by columns. On each iteration boundary columns
+are used by two threads. Thus, updatings must be synchronizaed.
+
+
+Implementations differ on the synchronization structure and mechanisms used.
+
+Structure:
+	Full synchronization on each iteration stage: solutions 1,2,3,4
+	Neighbor synchronization on each iteration stage: solutions 5,6,7,8
+
+Mechanisms:
+	Barriers:		solutions 1,2,3,4
+	Flushed variables: 	solutions 5,6
+	Lock variables: 	solutions 7,8
+
+
+DESCRIPTION OF EACH VERSION
+-----------------------------
+
+Series-Parallel (SP) versions:
+	Theese versions are highly synchronized. On each iteration all threads
+	are synchronized togheter by explicit or implicit barriers.
+
+	Solution 1: 
+		The iterations loop is inside a parallel region.
+		Threads synchronize with barriers before and after saving 
+		its new computed values to avoid race conditions when other
+		threads access to them.
+
+	Solution 2:
+		A modification of version 1. The parallel region is inside the
+		iterations loop. Thus, one explicit barrier may be eliminated
+		due to the implicit barrier associated with the end of the
+		parallel region on each iteration.
+
+	Solution 3:
+		This is an improvement on the solution 1. The data saving
+		is splited in three parts. Boundary columns are copied
+		during the synchronized part of the iteration. The rest
+		of the main thread data is saved out of the synchronized
+		part.
+
+	Solution 4:
+		It is a mix of solution 2 and 3. Only the copy of the 
+		boundary columns is synchronized. The parallel region is
+		inside the iterations loop. Only one explicit barrier
+		appears.
+
+Non-Series-Parallel (NSP) versions:
+	Theese versions synchronize each thread only with its neighbors,
+	the ones with which it really share boundary columns.
+
+	Solution 5:
+		Control variables are used to indicate to the neighbor
+		threads when data is being copied or updated. Variable
+		"flushing" mechanism included in OpenMP is used to avoid
+		race conditions during verification of the control variables
+		value. This version is based on active waits, with a loop
+		checking the variable until another thread changes it.
+
+	Solution 6:
+		An improvement on solution 5. It copies the left boundary 
+		column as soon as the synchronization with the left thread
+		is checked. Then a similar procceding is done with the 
+		right-hand thread.
+		This solution highly mimics the behaviour of a message-passing
+		implementation.
+
+	Solution 7:
+		Similar to solution 5, but it uses OpenMP lock variables
+		for synchronization with neighbor threads. Thus, non-active 
+		waits are issued.
+
+	Solution 8:
+		A similar improvement as in solution 6 to solution 7. 
+		Hand-Shake synchronization and copy is done first with the 
+		left neighbor and then with the right neighbor, using lock
+		variables.
+		This solution highly mimics the behaviour of a message-passing
+		implementation.
+
+-----------------------------------------------------------------------------
+
