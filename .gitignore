@@ -12,3 +12,5 @@ log
 inst
 obj
 *~
+*#
+/tags
