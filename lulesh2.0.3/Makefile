@@ -10,7 +10,7 @@ MPI_LIB = /opt/local/lib
 
 SERCXX = g++ -DUSE_MPI=0
 MPICXX = mpig++ -DUSE_MPI=1
-CXX = $(MPICXX)
+CXX = $(SERCXX)
 
 SOURCES2.0 = \
 	lulesh.cc \

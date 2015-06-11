@@ -34,8 +34,8 @@
 #
 # 0) Specify compiler and linker:
 
-CXX=/usr/local/bin/g++
-LINKER=/usr/local/bin/g++
+CXX=g++
+LINKER=g++
 #CXX=mpicxx
 #LINKER=mpicxx
 
@@ -64,7 +64,7 @@ USE_MPI =
 
 #IA32 with GCC: 
 #CPP_OPT_FLAGS = -O3 -funroll-all-loops -malign-double
-CPP_OPT_FLAGS = -O3 -ftree-vectorize -ftree-vectorizer-verbose=2
+CPP_OPT_FLAGS = -O3 -ftree-vectorize 
 
 #
 # 4) MPI library:
@@ -81,14 +81,14 @@ CPP_OPT_FLAGS = -O3 -ftree-vectorize -ftree-vectorizer-verbose=2
 #    If you want to run the program with OpenMP, make sure USING_OMP is set
 #    to -DUSING_OMP
 
-USE_OMP = 
-#USE_OMP = -DUSING_OMP
+#USE_OMP = 
+USE_OMP = -DUSING_OMP
 
 #
 # 6) OpenMP Compiler argument
 #    GCC and Intel compilers require -fopenmp and -openmp, resp.  Other compilers may differ.
 
-#OMP_FLAGS = -fopenmp
+OMP_FLAGS = -fopenmp
 #OMP_FLAGS = -openmp
 
 #
@@ -99,7 +99,7 @@ SYS_LIB =-lm
 #
 # 6) Specify name if executable (optional):
 
-TARGET = test_HPCCG
+TARGET = HPCCG.x
 
 ################### Derived Quantities (no modification required) ##############
 
