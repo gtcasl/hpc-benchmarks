@@ -32,11 +32,12 @@ do
             -p "PAPI_LST_INS" \
             -p "PAPI_BR_INS" \
             -g "rapl:::PACKAGE_ENERGY:PACKAGE0" \
-            -g "rapl:::PP0_ENERGY:PACKAGE0" \
+            -g "rapl:::DRAM_ENERGY:PACKAGE0" \
             ${programs[$program_idx]}
     done
     name=`echo "${programs[$program_idx]}" | awk '{print $1}' | awk -F "/" '{print $NF}'`
-    paste <(echo -e "application\n$name") wrapped.csv >> results.csv
+    echo "name: $name"
+    paste -d "," <(echo -e "application\n$name") wrapped.csv >> results.csv
     rm wrapped.csv
     chmod 666 results.csv
 done
