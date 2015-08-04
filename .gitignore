@@ -4,15 +4,13 @@
 bin
 1
 lulesh2.0
-data
 npbparams.h
-make.def
-suite.def
 setparams
-user.cf.mk
 compute
 miniFE_info.hpp
 log
 inst
 obj
 *~
+*#
+/tags
