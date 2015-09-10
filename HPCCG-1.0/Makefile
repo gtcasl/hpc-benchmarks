@@ -34,18 +34,18 @@
 #
 # 0) Specify compiler and linker:
 
-CXX=g++
-LINKER=g++
-#CXX=mpicxx
-#LINKER=mpicxx
+#CXX=g++
+#LINKER=g++
+CXX=mpic++
+LINKER=mpic++
 
 
 # 1) Build with MPI or not?
 #    If you want to run the program with MPI, make sure USE_MPI is set 
 #    to -DUSING_MPI
 
-USE_MPI =
-#USE_MPI = -DUSING_MPI
+#USE_MPI =
+USE_MPI = -DUSING_MPI
 
 
 # 2) MPI headers:  
@@ -82,15 +82,15 @@ CPP_OPT_FLAGS = -O3 -ftree-vectorize
 #    If you want to run the program with OpenMP, make sure USING_OMP is set
 #    to -DUSING_OMP
 
-#USE_OMP = 
-USE_OMP = -DUSING_OMP
+USE_OMP = 
+#USE_OMP = -DUSING_OMP
 
 #
 # 6) OpenMP Compiler argument
 #    GCC and Intel compilers require -fopenmp and -openmp, resp.  Other compilers may differ.
 
-OMP_FLAGS = -fopenmp
-#OMP_FLAGS = -openmp
+#OMP_FLAGS = -fopenmp
+OMP_FLAGS = 
 
 #
 # 7) System libraries: (May need to add -lg2c before -lm)
@@ -100,7 +100,7 @@ SYS_LIB =-lm
 #
 # 6) Specify name if executable (optional):
 
-TARGET = HPCCG.x
+TARGET = HPCCG.x.mpi
 
 ################### Derived Quantities (no modification required) ##############
 

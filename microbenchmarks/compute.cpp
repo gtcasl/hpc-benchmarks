@@ -4,7 +4,7 @@
 #include <random>
 
 // the number of 64bit words in 1gb
-#define BUFSIZE 15625000
+#define BUFSIZE 256
 
 using namespace std;
 
@@ -33,21 +33,21 @@ int main(int argc, char* argv[]){
   double* buffer = (double*)malloc(BUFSIZE * sizeof(double));
   random_device rd;
   mt19937 mt(rd());
-  uniform_real_distribution<double> real_dist(0,1);
   uniform_int_distribution<int> int_dist(0,BUFSIZE);
   for(long i = 0; i < BUFSIZE; ++i){
-    buffer[i] = real_dist(mt);
+    buffer[i] = i;
   }
 
 #pragma omp for
   for(long i = 0; i < iterations; ++i){
     // Compute
-    for(long c = 0; c < compute_iters; ++c){
+    /*for(long c = 0; c < compute_iters; ++c){
       long x = c * long{23453};
-    }
+    }*/
     // Memory
     for(long m = 0; m < memory_iters; ++m){
-      double x = buffer[int_dist(mt)];
+      //double x = buffer[int_dist(mt)];
+      double x = buffer[m % BUFSIZE];
     }
   }
 }
