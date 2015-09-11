@@ -23,11 +23,21 @@
 #define FIND_MPI_INT_TYPE(t) (sizeof(t) == sizeof(signed char) ? MPI_SIGNED_CHAR : sizeof(t) == sizeof(short) ? MPI_SHORT : sizeof(t) == sizeof(int) ? MPI_INT : sizeof(t) == sizeof(long) ? MPI_LONG : sizeof(t) == sizeof(long long) ? MPI_LONG_LONG : MPI_DATATYPE_NULL)
 #define FIND_MPI_UINT_TYPE(t) (sizeof(t) == sizeof(unsigned char) ? MPI_UNSIGNED_CHAR : sizeof(t) == sizeof(unsigned short) ? MPI_UNSIGNED_SHORT : sizeof(t) == sizeof(unsigned int) ? MPI_UNSIGNED : sizeof(t) == sizeof(unsigned long) ? MPI_UNSIGNED_LONG : sizeof(t) == sizeof(unsigned long long) ? MPI_UNSIGNED_LONG_LONG : MPI_DATATYPE_NULL)
 
+#ifndef MPI_INT64_T
 #define MPI_INT64_T FIND_MPI_INT_TYPE(int64_t)
+#endif
+#ifndef MPI_UINT64_T
 #define MPI_UINT64_T FIND_MPI_UINT_TYPE(uint64_t)
+#endif
+#ifndef MPI_UINT32_T
 #define MPI_UINT32_T FIND_MPI_UINT_TYPE(uint32_t)
+#endif
+#ifndef MPI_UINT16_T
 #define MPI_UINT16_T FIND_MPI_UINT_TYPE(uint16_t)
+#endif
+#ifndef MPI_AINT
 #define MPI_AINT FIND_MPI_UINT_TYPE(MPI_Aint)
+#endif
 #endif
 
 /* If you have problems with one-sided operations (such as crashes in the
