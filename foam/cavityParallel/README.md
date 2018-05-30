@@ -11,11 +11,13 @@ The environment should be run as follows:
 4 - scipy or matplotlib, numpy and pandas dependencies (python >= 2.7);
 
 steps to test:
-
+```
 $ source /foam-directory/etc/bashrc 
-$ ./Allclean
 
-edit system/decomposeParDict where numberOfSubdomains = $number_of_processors_available
+$ ./Allclean
+```
+
+Edit system/decomposeParDict where numberOfSubdomains = $number_of_processors_available
 
 and
 
@@ -28,12 +30,15 @@ simpleCoeffs
 ```
 for this example has been used n ( 4 4 ...) this parameters should be change as of total of your processors. In this case, the total is 4 x 4 = 16
 
+```
 $ blockMesh (to create mesh for processing)
 
 $ decomposePar -force (to split the mesh as of total processors able)
+```
 
 Configure "jobslurm.sh" according to what your hardware and resources.
 
+```
 $ sbatch jobslurm.sh (to running simulation)
-
+```
 
