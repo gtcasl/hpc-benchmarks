@@ -19,12 +19,13 @@ edit system/decomposeParDict where numberOfSubdomains = $number_of_processors_av
 
 and
 
+```
 simpleCoeffs
 {
         n               ( 4 4 1 );
             delta           0.0001;
 }
-
+```
 for this example has been used n ( 4 4 ...) this parameters should be change as of total of your processors. In this case, the total is 4 x 4 = 16
 
 $ blockMesh (to create mesh for processing)
